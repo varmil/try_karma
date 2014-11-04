@@ -73,7 +73,7 @@ gulp.task 'webserver', ->
 
 # watch
 gulp.task 'watch', ->
-  gulp.watch src.coffee, ['convert']
+  gulp.watch src.coffee, ['lint', 'convert']
  
 # default
 gulp.task 'default', ['webserver', 'watch']
