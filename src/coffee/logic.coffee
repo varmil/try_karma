@@ -1,9 +1,9 @@
 Logic = ->
-	@
+  @
 
 Logic::squaredNumber = (num) ->
-	num * num
+  num * num
 
 
 Logic::cubedNumber = (num) ->
-	num * num * num
+  num * num * num

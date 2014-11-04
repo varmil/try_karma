@@ -15,8 +15,8 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-      'js/**/*.coffee'
-      'tests/**/*.coffee'
+      'src/coffee/**/*.coffee'
+      'src/tests/**/*.coffee'
     ]
 
 
@@ -30,8 +30,8 @@ module.exports = (config) ->
     preprocessors: {
       # 参考：http://qiita.com/mokemokechicken/items/4c1bd14ef1a701d88608
       # ※文法によってはエラーが出る ex) Logic = -> などでクラスを作るとError
-      'js/**/*.coffee': ['coverage']
-      'tests/**/*.coffee': ['coffee']
+      'src/coffee/**/*.coffee': ['coverage']
+      'src/tests/**/*.coffee': ['coffee']
     }
 
 
