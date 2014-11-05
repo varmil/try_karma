@@ -1,8 +1,9 @@
-gulp = require('gulp')
+gulp = require 'gulp'
 pl = require('gulp-load-plugins')()
-browserSync = require('browser-sync')
+browserSync = require 'browser-sync'
 
 localPort = 9999
+projectName = 'try_karma'
 
 src =
   dirRoot:     'src'
@@ -14,9 +15,12 @@ src =
   dirJs:       'src/js/'
 
 dest =
-  dirMin:   'dest/min/'
-  dirImg:   'dest/img/'
-  dirMap:   '../map/'
+  all:         'dest/**/*'
+  dirMin:      'dest/min/'
+  minJs:       'dest/min/**/*.js'
+  dirConcat:   'dest/concat/'
+  dirImg:      'dest/img/'
+  dirMap:      '../map/'
 
 
 # coffeelint : コレと併用も gulp-coffeelint-threshold
@@ -35,22 +39,34 @@ gulp.task 'jshint', ->
 # compile coffee-script (for development because this generates .map file)
 gulp.task 'coffee', ->
   gulp.src src.coffee
+    .pipe pl.changed src.dirJs
     .pipe pl.sourcemaps.init()
-    .pipe pl.coffee map:true
+    .pipe pl.coffee()
     .pipe pl.sourcemaps.write dest.dirMap
     .pipe gulp.dest src.dirJs
 
 
-# uglify javascript （for production）
+# uglify（for production）
 gulp.task 'uglify', ->
   gulp.src src.js
-    .pipe pl.uglify()
+    .pipe pl.changed dest.dirMin
+    .pipe pl.uglify {
+      preserveComments: 'some'
+    }
     .pipe gulp.dest dest.dirMin
+
+
+# concat javascript
+gulp.task 'concat', ->
+  gulp.src dest.minJs
+    .pipe pl.concat projectName + '.js'
+    .pipe gulp.dest dest.dirConcat
 
 
 # image optimization
 gulp.task 'imagemin', ->
   gulp.src src.images
+    .pipe pl.changed dest.dirImg
     .pipe pl.imagemin {
       progressive: true # jpg
       interlaced: true # gif
@@ -64,7 +80,7 @@ gulp.task 'bs-init', ->
   browserSync.init {
     port: localPort
     server: {
-      baseDir: ['src']
+      baseDir: [src.dirRoot]
     }
     notify: false
     open: false
@@ -89,11 +105,13 @@ gulp.task 'karma', pl.shell.task [
 
 # watch
 gulp.task 'watch', ['bs-init'], ->
-  gulp.watch src.coffee, ['lint', 'convert']
-  gulp.watch src.all, ['bs-reload']
+  gulp.watch src.coffee, ['convert']
+  gulp.watch src.images, ['imagemin']
+  gulp.watch [src.all, dest.all], ['bs-reload'] # 雑
 
 # default
 gulp.task 'default', ['watch']
 
 # specific combination
-gulp.task 'convert', ['coffee', 'uglify']
+gulp.task 'convert', ['lint', 'coffee', 'uglify', 'concat']
+# gulp.task 'convert', ['jshint', 'uglify', 'concat'] # javascriptを書くならこっち
