@@ -1,1 +1,1 @@
-(function(){var t;t=function(){return this},t.prototype.squaredNumber=function(t){return t*t},t.prototype.cubedNumber=function(t){return t*t*t}}).call(this);
+(function(){var t,r;t=function(){return this},t.prototype.squaredNumber=function(t){return t*t},t.prototype.cubedNumber=function(t){return t*t*t},r={}+4}).call(this);
