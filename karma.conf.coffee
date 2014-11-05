@@ -34,11 +34,17 @@ module.exports = (config) ->
       'src/tests/**/*.coffee': ['coffee']
     }
 
+    # FIX ME doesnt work well..... => Chromeだといけた。PhantomJSだとnull
+    coffeePreprocessor: {
+      options: {
+        sourceMap: true
+      }
+    }
 
     # test results reporter to use
     # possible values: 'dots', 'progress'
     # available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'coverage']
+    reporters: ['mocha', 'coverage', 'html']
 
     coverageReporter: {
       type: 'html'
@@ -69,8 +75,8 @@ module.exports = (config) ->
 
     # start these browsers
     # available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    # other example: 'Chrome'
-    browsers: ['PhantomJS']
+    # other example: 'Chrome', 'PhantomJS'
+    browsers: ['Chrome']
 
 
     # Continuous Integration mode
