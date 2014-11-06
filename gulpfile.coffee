@@ -14,12 +14,12 @@ src =
   images:      'src/img/**/*'
   dirJs:       'src/js/'
 
-dest =
-  all:         'dest/**/*'
-  dirMin:      'dest/min/'
-  minJs:       'dest/min/**/*.js'
-  dirConcat:   'dest/concat/'
-  dirImg:      'dest/img/'
+dist =
+  all:         'dist/**/*'
+  dirMin:      'dist/min/'
+  minJs:       'dist/min/**/*.js'
+  dirConcat:   'dist/concat/'
+  dirImg:      'dist/img/'
   dirMap:      '../map/'
 
 
@@ -42,37 +42,37 @@ gulp.task 'coffee', ->
     .pipe pl.changed src.dirJs
     .pipe pl.sourcemaps.init()
     .pipe pl.coffee()
-    .pipe pl.sourcemaps.write dest.dirMap
+    .pipe pl.sourcemaps.write dist.dirMap
     .pipe gulp.dest src.dirJs
 
 
 # uglify（for production）
 gulp.task 'uglify', ->
   gulp.src src.js
-    .pipe pl.changed dest.dirMin
+    .pipe pl.changed dist.dirMin
     .pipe pl.uglify {
       preserveComments: 'some'
     }
-    .pipe gulp.dest dest.dirMin
+    .pipe gulp.dest dist.dirMin
 
 
 # concat javascript
 gulp.task 'concat', ->
-  gulp.src dest.minJs
+  gulp.src dist.minJs
     .pipe pl.concat projectName + '.js'
-    .pipe gulp.dest dest.dirConcat
+    .pipe gulp.dest dist.dirConcat
 
 
 # image optimization
 gulp.task 'imagemin', ->
   gulp.src src.images
-    .pipe pl.changed dest.dirImg
+    .pipe pl.changed dist.dirImg
     .pipe pl.imagemin {
       progressive: true # jpg
       interlaced: true # gif
       optimizationLevel: 3 # the higher the level, the more trials.
     }
-    .pipe gulp.dest dest.dirImg
+    .pipe gulp.dest dist.dirImg
 
 
 # browserSync : http://www.browsersync.io/docs/
@@ -107,7 +107,7 @@ gulp.task 'karma', pl.shell.task [
 gulp.task 'watch', ['bs-init'], ->
   gulp.watch src.coffee, ['convert']
   gulp.watch src.images, ['imagemin']
-  gulp.watch [src.all, dest.all], ['bs-reload'] # 雑
+  gulp.watch [src.all, dist.all], ['bs-reload'] # 雑
 
 # default
 gulp.task 'default', ['watch']
