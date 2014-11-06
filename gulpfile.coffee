@@ -42,7 +42,7 @@ gulp.task 'jshint', ->
 # compile coffee-script (for development because this generates .map file)
 gulp.task 'coffee', ->
   gulp.src src.coffee
-    .pipe pl.changed src.dirJs
+    .pipe pl.changed src.dirJs, {hasChanged: pl.changed.compareLastModifiedTime}
     .pipe pl.sourcemaps.init()
     .pipe pl.coffee()
     .pipe pl.sourcemaps.write src.dirMap
@@ -52,7 +52,7 @@ gulp.task 'coffee', ->
 # uglify（for production）
 gulp.task 'uglify', ->
   gulp.src src.js
-    .pipe pl.changed dist.dirJs
+    .pipe pl.changed dist.dirJs, {hasChanged: pl.changed.compareLastModifiedTime}
     .pipe pl.uglify {
       preserveComments: 'some'
     }
@@ -74,7 +74,7 @@ gulp.task 'concat', ->
 # image optimization
 gulp.task 'imagemin', ->
   gulp.src src.images
-    .pipe pl.changed dist.dirImg
+    .pipe pl.changed dist.dirImg, {hasChanged: pl.changed.compareLastModifiedTime}
     .pipe pl.imagemin {
       progressive: true # jpg
       interlaced: true # gif
