@@ -1,0 +1,23 @@
+{
+  "name": "try_karma",
+  "version": "0.0.0",
+  "homepage": "https://github.com/varmil/try_karma",
+  "authors": [
+    "Yamamoto Akihiro"
+  ],
+  "keywords": [
+    "gulp",
+    "karma"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "zepto": "~1.1.4"
+  }
+}

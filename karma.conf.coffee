@@ -16,7 +16,7 @@ module.exports = (config) ->
     # list of files / patterns to load in the browser
     files: [
       'src/coffee/**/*.coffee'
-      'src/tests/**/*.coffee'
+      'src/test/**/*.coffee'
     ]
 
 
@@ -31,7 +31,7 @@ module.exports = (config) ->
       # 参考：http://qiita.com/mokemokechicken/items/4c1bd14ef1a701d88608
       # ※文法によってはエラーが出る ex) Logic = -> などでクラスを作るとError
       'src/coffee/**/*.coffee': ['coverage']
-      'src/tests/**/*.coffee': ['coffee']
+      'src/test/**/*.coffee': ['coffee']
     }
 
     # FIX ME doesnt work well..... => Chromeだといけた。PhantomJSだとnull

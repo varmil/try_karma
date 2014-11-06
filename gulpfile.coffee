@@ -1,6 +1,7 @@
 gulp = require 'gulp'
 pl = require('gulp-load-plugins')()
 browserSync = require 'browser-sync'
+runSequence = require 'run-sequence'
 
 localPort = 9999
 projectName = 'try_karma'
@@ -9,18 +10,20 @@ src =
   dirRoot:     'src'
   all:         'src/**/*'
   coffee:      'src/coffee/**/*.coffee'
-  js:          'src/js/**/*.js' # javascriptを書くならこっち
-  tests:       'src/tests/**/*.coffee'
-  images:      'src/img/**/*'
   dirJs:       'src/js/'
+  js:          'src/js/**/*.js' # javascriptを書くならこっち
+  test:        'src/test/**/*.coffee'
+  images:      'src/img/**/*'
+  dirMap:      '../map/'
 
 dist =
   all:         'dist/**/*'
-  dirMin:      'dist/min/'
-  minJs:       'dist/min/**/*.js'
-  dirConcat:   'dist/concat/'
   dirImg:      'dist/img/'
-  dirMap:      '../map/'
+  dirJs:       'dist/js/' # uglifyされたJSファイルを置く
+  js:          'dist/js/**/*.js'
+  dirJsLib:    'dist/js/lib/' # uglifyされたJSファイル(ライブラリ類)を置く
+  jsLib:       'dist/js/lib/**/*.js'
+  dirConcat:   'dist/concat/' # uglify + concatされたJSファイルを置く
 
 
 # coffeelint : コレと併用も gulp-coffeelint-threshold
@@ -42,24 +45,29 @@ gulp.task 'coffee', ->
     .pipe pl.changed src.dirJs
     .pipe pl.sourcemaps.init()
     .pipe pl.coffee()
-    .pipe pl.sourcemaps.write dist.dirMap
+    .pipe pl.sourcemaps.write src.dirMap
     .pipe gulp.dest src.dirJs
 
 
 # uglify（for production）
 gulp.task 'uglify', ->
   gulp.src src.js
-    .pipe pl.changed dist.dirMin
+    .pipe pl.changed dist.dirJs
     .pipe pl.uglify {
       preserveComments: 'some'
     }
-    .pipe gulp.dest dist.dirMin
+    .pipe gulp.dest dist.dirJs
 
 
-# concat javascript
+# ライブラリ類と、それ以外とで別々にconcatする
 gulp.task 'concat', ->
-  gulp.src dist.minJs
+  # lib以下以外のJSをまとめる
+  gulp.src [dist.js, '!' + dist.jsLib]
     .pipe pl.concat projectName + '.js'
+    .pipe gulp.dest dist.dirConcat
+  # lib以下をまとめる
+  gulp.src dist.jsLib
+    .pipe pl.concat 'lib.js'
     .pipe gulp.dest dist.dirConcat
 
 
@@ -113,5 +121,8 @@ gulp.task 'watch', ['bs-init'], ->
 gulp.task 'default', ['watch']
 
 # specific combination
-gulp.task 'convert', ['lint', 'coffee', 'uglify', 'concat']
-# gulp.task 'convert', ['jshint', 'uglify', 'concat'] # javascriptを書くならこっち
+gulp.task 'convert', (callback) ->
+  runSequence 'lint', 'coffee', 'uglify', 'concat', callback
+# javascriptを書くならこっち
+# gulp.task 'convert', (callback) ->
+#   runSequence 'jshint', 'uglify', 'concat', callback
